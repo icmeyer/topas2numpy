@@ -34,7 +34,7 @@ limited_col_names = [
 ]
 
 
-def read_ntuple(filepath):
+def read_ntuple(filepath, n_records=-1):
     root, ext = os.path.splitext(filepath)
     ntuple_path = root + '.phsp'
     header_path = root + '.header'
@@ -42,12 +42,14 @@ def read_ntuple(filepath):
     file_format, col_names = _sniff_format(header_path)
 
     if file_format == 'ascii':
+        max_rows_arg = None if n_records == -1 else n_records
         # preserve column names => cannot be viewed as a np.recarray
         # http://docs.scipy.org/doc/numpy-1.10.1/user/basics.io.genfromtxt.html#validating-names
-        return np.genfromtxt(ntuple_path, names=col_names, deletechars=set(), replace_space='')
+        return np.genfromtxt(ntuple_path, names=col_names, deletechars=set(),
+                             replace_space='', max_rows=max_rows_arg)
 
     elif file_format == 'binary':
-        return np.fromfile(ntuple_path, dtype=np.dtype(col_names))
+        return np.fromfile(ntuple_path, dtype=np.dtype(col_names), count=n_records)
 
     else:
         raise IOError('Unrecognized file format: "%s"' % filepath)

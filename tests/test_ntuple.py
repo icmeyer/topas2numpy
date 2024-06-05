@@ -135,6 +135,21 @@ class TestBinaryOtherNtuple(unittest.TestCase, CommonOtherTests):
     def setUp(self):
         self.result = read_ntuple(binary_other_path)
 
+class TestAsciiNtupleNrecords(unittest.TestCase, CommonTests):
+    def setUp(self):
+        self.result = read_ntuple(ascii_path, n_records=50)
+        self.column_names = column_names
+
+    def test_size(self):
+        self.assertEqual(self.result.size, 50)
+
+class TestBinaryNtupleNrecords(unittest.TestCase, CommonTests):
+    def setUp(self):
+        self.result = read_ntuple(binary_path, n_records=50)
+        self.column_names = column_names
+
+    def test_size(self):
+        self.assertEqual(self.result.size, 50)
 
 if __name__ == '__main__':
     import sys
